@@ -1,12 +1,14 @@
 // server.js
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = 3000;
 
+app.use(cors());
 app.use(express.json());
-app.use(express.static('public')); // Serve your frontend files here
+app.use(express.static('public')); // Serve frontend files from 'public' folder
 
-// In-memory mock user data
+// Mock user data in-memory
 let user = {
   customerId: 'rameshID',
   pin: '1234',
@@ -29,7 +31,7 @@ let user = {
   }
 };
 
-// Login endpoint
+// Login API
 app.post('/api/login', (req, res) => {
   const { customerId, pin } = req.body;
   if (customerId === user.customerId && pin === user.pin) {
@@ -39,12 +41,12 @@ app.post('/api/login', (req, res) => {
   }
 });
 
-// Get balance endpoint
+// Get balance API
 app.get('/api/balance', (req, res) => {
   res.json({ balance: user.balance, safeMode: user.safeMode, frozen: user.frozen });
 });
 
-// Send money endpoint (safe mode limit 2000)
+// Send money API
 app.post('/api/send', (req, res) => {
   if (user.frozen) return res.status(403).json({ error: 'Account is frozen' });
   const { amount, recipient } = req.body;
@@ -57,17 +59,17 @@ app.post('/api/send', (req, res) => {
   res.json({ success: true, newBalance: user.balance });
 });
 
-// Get transactions
+// Get transactions API
 app.get('/api/transactions', (req, res) => {
   res.json({ transactions: user.transactions });
 });
 
-// Get settings
+// Get settings API
 app.get('/api/settings', (req, res) => {
   res.json({ settings: user.settings, safeMode: user.safeMode });
 });
 
-// Update settings
+// Update settings API
 app.post('/api/settings', (req, res) => {
   Object.assign(user.settings, req.body.settings);
   if (typeof req.body.safeMode === 'boolean') {
@@ -76,18 +78,18 @@ app.post('/api/settings', (req, res) => {
   res.json({ success: true });
 });
 
-// Freeze account
+// Freeze account API
 app.post('/api/freeze', (req, res) => {
   user.frozen = true;
   res.json({ success: true });
 });
 
-// Unfreeze account - optional endpoint
+// Unfreeze account API
 app.post('/api/unfreeze', (req, res) => {
   user.frozen = false;
   res.json({ success: true });
 });
 
 app.listen(port, () => {
-  console.log(`Simple SafeBank backend running at http://localhost:${port}`);
+  console.log(`SafeBank backend running at http://localhost:${port}`);
 });
