@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login to Netbanking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #f2f6fc;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      width: 320px;
+      max-width: 95vw;
+      text-align: center;
+    }
+
+    .heading {
+      font-size: 2.2rem;
+      margin-bottom: 24px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    .option-box {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 24px;
+      transition: transform 0.2s, font-size 0.2s;
+    }
+
+    .option-box label {
+      font-size: 1.4rem;
+      margin-bottom: 8px;
+      color: #34495e;
+      transition: font-size 0.2s;
+    }
+
+    .option-box input {
+      font-size: 1.3rem;
+      padding: 16px;
+      width: 100%;
+      border: 2px solid #4b83f7;
+      border-radius: 10px;
+      margin-bottom: 4px;
+      transition: font-size 0.2s, padding 0.2s;
+    }
+
+    .option-box:hover,
+    .option-box:focus-within {
+      transform: scale(1.08);
+    }
+
+    .option-box:hover label,
+    .option-box:focus-within label {
+      font-size: 1.6rem;
+    }
+
+    .option-box:hover input,
+    .option-box:focus-within input {
+      font-size: 1.5rem;
+      padding: 20px;
+    }
+
+    .submit-btn {
+      font-size: 1.5rem;
+      padding: 12px 0;
+      width: 100%;
+      background: #4b83f7;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s, font-size 0.2s;
+      margin-bottom: 24px;
+    }
+
+    .submit-btn:hover,
+    .submit-btn:focus {
+      transform: scale(1.09);
+      font-size: 1.7rem;
+      background: #2859b1;
+    }
+
+    .read-aloud-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .toggle-btn {
+      width: 36px;
+      height: 36px;
+      background: #eee;
+      border: 2px solid #4b83f7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #4b83f7;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .toggle-btn.active {
+      background: #4b83f7;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="heading">Login to Netbanking</div>
+
+    <div class="option-box">
+      <label for="customer-id">Customer ID</label>
+      <input type="text" id="customer-id" name="customer-id" autocomplete="off" placeholder="Enter your customer ID">
+    </div>
+
+    <div class="option-box">
+      <label for="pin">PIN</label>
+      <input type="password" id="pin" name="pin" autocomplete="off" placeholder="Enter your PIN">
+    </div>
+
+    <button class="submit-btn" id="submitBtn">Submit</button>
+
+    <div class="read-aloud-toggle">
+      <span>Read Aloud</span>
+      <div class="toggle-btn" id="readAloudBtn" tabindex="0">&#128266;</div>
+    </div>
+  </div>
+
+  <script>
+    // Read Aloud functionality using Speech Synthesis API
+    const readAloudBtn = document.getElementById('readAloudBtn');
+    let isReading = false;
+
+    readAloudBtn.addEventListener('click', () => {
+      if (isReading) {
+        window.speechSynthesis.cancel();
+        readAloudBtn.classList.remove('active');
+        isReading = false;
+        return;
+      }
+      const textToRead = `
+        Login to Netbanking.
+        Please enter your Customer ID.
+        Please enter your PIN.
+        Press Submit to continue.
+      `;
+      const utterance = new SpeechSynthesisUtterance(textToRead);
+      utterance.rate = 0.95;
+      utterance.pitch = 1.0;
+      utterance.onend = () => {
+        readAloudBtn.classList.remove('active');
+        isReading = false;
+      };
+      window.speechSynthesis.speak(utterance);
+      readAloudBtn.classList.add('active');
+      isReading = true;
+    });
+
+    // Optional: Accessibility - Keyboard activation for toggle
+    readAloudBtn.addEventListener('keydown', (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        readAloudBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>

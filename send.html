@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Send Money - SafeBank</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html { font-size: 16px; background: #f7fafd; }
+    body {
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #f7fafd;
+      color: #23303e;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%; max-width: 425px; margin: 60px auto 16px auto;
+      background: #fff;
+      padding: 34px 26px;
+      border-radius: 18px;
+      box-shadow: 0 4px 16px #d7eaf9bb;
+      text-align: center;
+      display: flex; flex-direction: column; gap: 28px;
+    }
+
+    .heading {
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin-bottom: 18px;
+    }
+    .explain-btn {
+      background: #3bd05e;
+      color: #fff;
+      font-size: 1.13rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 7px;
+      padding: 10px 20px;
+      cursor: pointer;
+      margin-bottom: 8px;
+      transition: transform 0.18s;
+    }
+    .explain-btn:hover { transform: scale(1.13); }
+    .safe-mode-indicator {
+      display: inline-block;
+      font-size: 1.1rem;
+      color: #2ecf4b;
+      background: #e2faf0;
+      border-radius: 8px;
+      padding: 2px 12px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: flex; flex-direction: column; align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 24px;
+      width: 100%;
+      transition: transform 0.18s, font-size 0.18s;
+    }
+    .form-group label {
+      font-size: 1.37rem;
+      margin-bottom: 6px;
+      color: #334968;
+      transition: font-size 0.18s;
+    }
+    .form-group input {
+      font-size: 1.32rem;
+      font-weight: bold;
+      width: 100%;
+      padding: 16px 14px;
+      border: 2px solid #4b83f7;
+      border-radius: 10px;
+      outline: none;
+      margin-bottom: 4px;
+      transition: font-size 0.18s, padding 0.18s, border-color 0.18s;
+    }
+    .form-group:hover,
+    .form-group:focus-within {
+      transform: scale(1.09);
+    }
+    .form-group:hover label,
+    .form-group:focus-within label {
+      font-size: 1.68rem;
+    }
+    .form-group:hover input,
+    .form-group:focus-within input {
+      font-size: 1.58rem; padding: 20px 18px; border-color: #2ecf4b;
+    }
+
+    .proceed-btn {
+      background: #2ecf4b;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      padding: 16px 0;
+      width: 100%;
+      margin-top: 22px;
+      cursor: pointer;
+      transition: background 0.16s, transform 0.18s, font-size 0.18s;
+      box-shadow: 0 2px 10px #90e2a4b0;
+      outline: none;
+    }
+    .proceed-btn:hover, .proceed-btn:active, .proceed-btn:focus {
+      background: #22b73a;
+      transform: scale(1.11);
+      font-size: 1.7rem;
+    }
+    /* Confirmation popover */
+    .confirm-modal-bg {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: #23303e8c;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 30;
+    }
+    .confirm-modal {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 5px 18px #d7eaf9bb;
+      padding: 42px 32px;
+      text-align: center;
+      max-width: 420px;
+      width: 98vw;
+      font-size: 1.9rem;
+      font-weight: bold;
+    }
+    .confirm-info {
+      font-size: 1.38rem;
+      color: #18744d;
+      margin-bottom: 28px;
+    }
+    .confirm-btn {
+      border: none;
+      border-radius: 13px;
+      font-size: 1.49rem;
+      font-weight: bold;
+      padding: 20px 0;
+      width: 85%;
+      margin-bottom: 18px;
+      margin-top: 10px;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.18s;
+      outline: none;
+      box-shadow: 0 2px 8px #e0f8e5b6;
+    }
+    .send-btn { background: #2ecf4b; color: #fff; }
+    .send-btn:hover, .send-btn:focus { background: #18744d; transform: scale(1.11); }
+    .cancel-btn { background: #eb2430; color: #fff; }
+    .cancel-btn:hover, .cancel-btn:focus { background: #8c1624; transform: scale(1.11); }
+
+    /* Error/SafeMode message */
+    .error-msg {
+      background: #ffeceb;
+      color: #d23d46;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 1.14rem;
+      font-weight: bold;
+      margin-bottom: 14px;
+      text-align: left;
+      display: none;
+    }
+
+    /* Number Keyboard (optional visual) */
+    .number-keyboard {
+      display: flex; flex-wrap: wrap; gap: 13px; justify-content: center;
+      margin: 10px 0 0 0; padding: 0;
+    }
+    .number-key {
+      background: #e6ecf3;
+      color: #333;
+      border-radius: 9px;
+      font-size: 1.45rem;
+      font-weight: bold;
+      width: 52px; height: 54px;
+      margin: 0;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 2px 7px #d6e8f1a5;
+      transition: background 0.14s, transform 0.15s;
+    }
+    .number-key:hover, .number-key:active, .number-key:focus {
+      background: #84b0eb; color: #fff; transform: scale(1.16);
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 18px 6vw; }
+      .heading { font-size: 1.35rem; }
+      .confirm-modal { padding: 24px 6vw; font-size: 1.27rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="sendPage">
+    <div class="heading">Send Money</div>
+    <button class="explain-btn" id="explainSendBtn">
+      Explain This Page
+    </button>
+
+    <div class="safe-mode-indicator" id="safeModeText">
+      🛡️ Safe Mode ON (Max ₹2000 per day)
+    </div>
+
+    <div class="form-group" id="recipientGroup">
+      <label for="recipient">Enter Name or Phone Number</label>
+      <input type="text" id="recipient" name="recipient" autocomplete="off" placeholder="Type the person you want to send money to." aria-label="Recipient">
+    </div>
+
+    <div class="form-group" id="amountGroup">
+      <label for="amount">Enter Amount</label>
+      <input type="text" id="amount" name="amount" autocomplete="off" inputmode="numeric" placeholder="Amount in ₹" aria-label="Amount">
+      <div class="number-keyboard" id="numberKeyboard"></div>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <button class="proceed-btn" id="proceedBtn">PROCEED</button>
+  </div>
+
+  <!-- Confirmation Modal (hidden by default) -->
+  <div id="confirmModalBg" style="display:none;" class="confirm-modal-bg">
+    <div class="confirm-modal">
+      <div id="confirmMsg">Are you sure you want to send ₹<span id="confirmAmt"></span> to <span id="confirmTo"></span>?</div>
+      <div class="confirm-info">Only after pressing YES, the transaction will be processed.</div>
+      <button class="confirm-btn send-btn" id="yesSendBtn">YES, SEND MONEY</button>
+      <button class="confirm-btn cancel-btn" id="noBackBtn">NO, GO BACK</button>
+    </div>
+  </div>
+
+<script>
+  // Safe Mode ON by default (demo, static value)
+  const SAFE_MODE_LIMIT = 2000;
+  let safeModeOn = true;
+
+  // Read aloud utility
+  function speak(text) {
+    window.speechSynthesis.cancel();
+    let utter = new window.SpeechSynthesisUtterance(text);
+    utter.rate = 1.07;
+    window.speechSynthesis.speak(utter);
+  }
+
+  // Explain this page
+  document.getElementById("explainSendBtn").onclick = function() {
+    speak("This page helps you send money. Enter the amount and confirm.");
+  }
+
+  // Step 1: Recipient input hover/read aloud
+  document.getElementById("recipient").addEventListener("focus", function() {
+    speak("Type the person you want to send money to.");
+  });
+
+  // Step 2: Amount input and talking keyboard
+  // Show number keyboard below amount
+  const amountInput = document.getElementById("amount");
+  const keyboardDiv = document.getElementById("numberKeyboard");
+  const KEYS = ["1","2","3","4","5","6","7","8","9","0","⌫","🔊"];
+  KEYS.forEach(key => {
+    let btn = document.createElement("button");
+    btn.className = "number-key";
+    btn.innerText = key;
+    btn.tabIndex = 0;
+    btn.onclick = () => handleKeypress(key);
+    keyboardDiv.appendChild(btn);
+  });
+
+  // Handler for keys: numbers insert, backspace, speaker reads number
+  function handleKeypress(key) {
+    if (key === "⌫") {
+      amountInput.value = amountInput.value.slice(0, -1);
+    } else if (key === "🔊") {
+      if (amountInput.value) {
+        speak(amountInput.value.split('').join(' '));
+      } else {
+        speak("No amount entered.");
+      }
+    } else {
+      amountInput.value += key;
+      speak(key);
+    }
+    amountInput.focus();
+  }
+
+  // Step 3: Proceed button with Safe Mode check and confirmation modal
+  document.getElementById("proceedBtn").onclick = function() {
+    let recipient = document.getElementById("recipient").value.trim();
+    let amount = amountInput.value.trim();
+    let errMsg = document.getElementById("errorMsg");
+    errMsg.style.display = "none";
+
+    // Simple validations
+    if (!recipient) {
+      errMsg.innerText = "Please enter a recipient name or phone number.";
+      errMsg.style.display = "block";
+      speak(errMsg.innerText);
+      return;
+    }
+    if (!amount || isNaN(amount) || Number(amount) < 1) {
+      errMsg.innerText = "Please enter a valid amount.";
+      errMsg.style.display = "block";
+      speak(errMsg.innerText);
+      return;
+    }
+    if (safeModeOn && Number(amount) > SAFE_MODE_LIMIT) {
+      errMsg.innerText = `You can only send ₹${SAFE_MODE_LIMIT} in Safe Mode.`;
+      errMsg.style.display = "block";
+      speak(errMsg.innerText);
+      return;
+    }
+    // Show confirmation modal
+    document.getElementById("sendPage").style.filter = "blur(2px)";
+    document.getElementById("confirmTo").innerText = recipient;
+    document.getElementById("confirmAmt").innerText = amount;
+    document.getElementById("confirmModalBg").style.display = "flex";
+    speak(`Are you sure you want to send ₹${amount} to ${recipient}?`);
+  };
+
+  // Confirmation modal YES/NO logic
+  document.getElementById("yesSendBtn").onclick = function() {
+    document.getElementById("confirmModalBg").style.display = "none";
+    document.getElementById("sendPage").style.filter = "none";
+    speak("Transaction processed! Money sent successfully.");
+    alert("Transaction processed! (Pretend API call is made.)");
+    // Reset fields for demo
+    document.getElementById("recipient").value = "";
+    amountInput.value = "";
+  };
+  document.getElementById("noBackBtn").onclick = function() {
+    document.getElementById("confirmModalBg").style.display = "none";
+    document.getElementById("sendPage").style.filter = "none";
+    speak("Transaction cancelled. You can edit the details.");
+  };
+
+  // Allow pressing Enter in inputs to trigger PROCEED
+  amountInput.addEventListener("keydown", function(e){
+    if(e.key==="Enter") document.getElementById("proceedBtn").click();
+  });
+  document.getElementById("recipient").addEventListener("keydown", function(e){
+    if(e.key==="Enter") amountInput.focus();
+  });
+</script>
+</body>
+</html>
