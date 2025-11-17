@@ -183,6 +183,13 @@
         readAloudBtn.click();
       }
     });
+
+    // Redirect to home.html on Submit button click
+    document.getElementById('submitBtn').addEventListener('click', function(event) {
+      event.preventDefault(); // prevent default behavior if any
+      // Here you can add validation if needed before redirecting
+      window.location.href = "home.html";
+    });
   </script>
 </body>
 </html>

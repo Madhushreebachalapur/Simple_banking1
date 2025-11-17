@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Settings - SafeBank</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      background: #f7fafd;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 28px 20px;
+      color: #23303e;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      min-height: 100vh;
+    }
+    h1 {
+      font-size: 2.3rem;
+      text-align: center;
+      margin-bottom: 36px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    .section {
+      margin-bottom: 36px;
+    }
+    label {
+      display: block;
+      font-size: 1.45rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #2f3e54;
+    }
+    select, option {
+      font-size: 1.35rem;
+      padding: 14px 10px;
+      border-radius: 10px;
+      border: 2px solid #4b83f7;
+      width: 100%;
+      cursor: pointer;
+      user-select: none;
+    }
+    select:focus {
+      outline-color: #2d6ffb;
+    }
+
+    /* Text Size Buttons */
+    .text-size-group {
+      display: flex;
+      gap: 16px;
+    }
+    .text-size-btn {
+      flex: 1 1 calc(25% - 12px);
+      background: #dbe7ff;
+      font-size: 1.4rem;
+      font-weight: bold;
+      padding: 16px 0;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      color: #1c3aad;
+      user-select: none;
+      transition: background-color 0.22s, transform 0.22s;
+      text-align: center;
+      outline: none;
+      box-shadow: 0 2px 5px #aec1f7aa;
+      border: 2px solid transparent;
+    }
+    .text-size-btn:hover,
+    .text-size-btn:focus {
+      background: #acc1ff;
+      transform: scale(1.08);
+      border-color: #3661ff;
+      color: #0a2b79;
+    }
+    .text-size-btn.selected {
+      background: #3366ff;
+      border-color: #2049c8;
+      color: white;
+      box-shadow: 0 5px 15px #4b72ffcc;
+      transform: scale(1.15);
+    }
+
+    /* Toggle Switches */
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      margin-bottom: 12px;
+      font-size: 1.32rem;
+      font-weight: 700;
+      color: #2f3e54;
+      user-select: none;
+    }
+    .toggle-row .info {
+      max-width: 270px;
+      font-weight: 400;
+      font-size: 1rem;
+      color: #5c637a;
+      margin-right: 24px;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 58px;
+      height: 34px;
+      display: inline-block;
+      cursor: pointer;
+    }
+    .toggle-switch input {
+      display: none;
+    }
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: #cacdd4;
+      border-radius: 28px;
+      transition: background-color 0.2s;
+    }
+    .slider:before {
+      content: "";
+      position: absolute;
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s;
+      box-shadow: 0 2px 6px #81868b4b;
+    }
+    input:checked + .slider {
+      background: #3bad5e;
+    }
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+
+    /* Reminders toggles - grouped vertically */
+    .reminder-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 6px;
+    }
+    .reminder-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: #2c3a4a;
+      user-select: none;
+    }
+
+    /* Freeze Button */
+    .freeze-btn {
+      width: 100%;
+      padding: 22px 0;
+      background: #eb2430;
+      color: #fff;
+      font-size: 1.5rem;
+      font-weight: 900;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 15px #d54a55cc;
+      transition: background-color 0.3s, transform 0.3s;
+      outline: none;
+      user-select: none;
+    }
+    .freeze-btn:hover,
+    .freeze-btn:focus {
+      background: #a71a20;
+      transform: scale(1.06);
+      box-shadow: 0 8px 25px #b01f25dd;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>Settings</h1>
+
+  <!-- Language -->
+  <section class="section" aria-label="Language settings">
+    <label for="languageSelect">Language</label>
+    <select id="languageSelect" name="language">
+      <option value="hi">Hindi</option>
+      <option value="en" selected>English</option>
+      <option value="kn">Kannada</option>
+      <option value="ta">Tamil</option>
+      <option value="te">Telugu</option>
+    </select>
+  </section>
+
+  <!-- Text Size -->
+  <section class="section" aria-label="Text size settings">
+    <label>Text Size</label>
+    <div class="text-size-group" role="radiogroup" aria-labelledby="textSizeLegend">
+      <button class="text-size-btn" data-size="small" role="radio" aria-checked="false" tabindex="0">Small</button>
+      <button class="text-size-btn selected" data-size="medium" role="radio" aria-checked="true" tabindex="-1">Medium</button>
+      <button class="text-size-btn" data-size="big" role="radio" aria-checked="false" tabindex="-1">Big</button>
+      <button class="text-size-btn" data-size="extra" role="radio" aria-checked="false" tabindex="-1">Extra Big</button>
+    </div>
+  </section>
+
+  <!-- Voice Assistance -->
+  <section class="section" aria-label="Voice assistance setting">
+    <label for="voiceToggle">Voice Assistance</label>
+    <div class="toggle-row">
+      <span class="info">Enable voice guidance</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="voiceToggle" />
+        <span class="slider"></span>
+      </label>
+    </div>
+  </section>
+
+  <!-- Safe Mode -->
+  <section class="section" aria-label="Safe mode setting">
+    <label for="safeToggle">Safe Mode</label>
+    <div class="toggle-row" title="Limits sending amount for safety.">
+      <span class="info">Limits sending amount for safety.</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="safeToggle" checked />
+        <span class="slider"></span>
+      </label>
+    </div>
+  </section>
+
+  <!-- Auto Reminders -->
+  <section class="section" aria-label="Auto reminders settings">
+    <label>Auto Reminders</label>
+    <div class="reminder-list">
+      <div class="reminder-item">
+        <span>Medicine</span>
+        <label class="toggle-switch">
+          <input type="checkbox" class="reminderToggle" id="medReminder" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="reminder-item">
+        <span>Bill Payment</span>
+        <label class="toggle-switch">
+          <input type="checkbox" class="reminderToggle" id="billReminder" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="reminder-item">
+        <span>Pension check-in</span>
+        <label class="toggle-switch">
+          <input type="checkbox" class="reminderToggle" id="pensionReminder" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <!-- Account Freeze -->
+  <section class="section" aria-label="Account freeze">
+    <button class="freeze-btn" id="freezeBtn">FREEZE MY ACCOUNT</button>
+  </section>
+
+<script>
+  // Text Size Buttons Logic
+  const textSizeButtons = document.querySelectorAll('.text-size-btn');
+  let selectedBtn = document.querySelector('.text-size-btn.selected');
+
+  textSizeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      if (button === selectedBtn) return;
+      selectedBtn.classList.remove('selected');
+      selectedBtn.setAttribute('aria-checked', 'false');
+      selectedBtn.setAttribute('tabindex', '-1');
+
+      button.classList.add('selected');
+      button.setAttribute('aria-checked', 'true');
+      button.setAttribute('tabindex', '0');
+      selectedBtn = button;
+
+      // Example action: You can apply font-size changes to body or app container here
+      let size = button.getAttribute('data-size');
+      let fontSizeMap = {
+        "small": "14px",
+        "medium": "16px",
+        "big": "20px",
+        "extra": "24px"
+      };
+      document.body.style.fontSize = fontSizeMap[size];
+    });
+  });
+
+  // Freeze Button
+  document.getElementById('freezeBtn').addEventListener('click', () => {
+    if (confirm("Are you sure you want to freeze your account? This action can be undone by contacting support.")) {
+      alert("Your account has been frozen. Please contact bank support for further assistance.");
+    }
+  });
+
+  // Voice Assistance toggle demo (just alerts)
+  document.getElementById('voiceToggle').addEventListener('change', (e) => {
+    if (e.target.checked) {
+      alert("Voice Assistance Enabled");
+    } else {
+      alert("Voice Assistance Disabled");
+    }
+  });
+
+  // Safe Mode toggle demo
+  document.getElementById('safeToggle').addEventListener('change', (e) => {
+    if (e.target.checked) {
+      alert("Safe Mode Enabled: Limits sending amount for safety.");
+    } else {
+      alert("Safe Mode Disabled: Normal sending limits apply.");
+    }
+  });
+
+  // Auto Reminder toggles demo
+  document.querySelectorAll('.reminderToggle').forEach(tog => {
+    tog.addEventListener('change', (e) => {
+      alert(`${e.target.parentElement.previousElementSibling.textContent} reminder turned ${e.target.checked ? 'ON' : 'OFF'}`);
+    });
+  });
+</script>
+</body>
+</html>

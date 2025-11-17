@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Emergency - SafeBank</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      background: #fff0f0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      color: #b02a2a;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 48px;
+      font-weight: bold;
+    }
+    .panic-btn {
+      background: #eb2430;
+      color: #fff;
+      border: none;
+      border-radius: 24px;
+      width: 320px;
+      max-width: 95vw;
+      height: 140px;
+      font-size: 3rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 6px 20px #d24a4fcc;
+      outline: none;
+      transition: background 0.3s, transform 0.3s;
+      user-select: none;
+    }
+    .panic-btn:hover,
+    .panic-btn:focus {
+      background: #a71a20;
+      transform: scale(1.1);
+      box-shadow: 0 9px 26px #b01f25dd;
+    }
+    .message {
+      margin-top: 32px;
+      font-size: 1.4rem;
+      font-weight: 600;
+      max-width: 320px;
+      color: #b02a2a;
+    }
+    .call-support, .explain-btn {
+      margin-top: 26px;
+      font-size: 1.4rem;
+      border-radius: 12px;
+      width: 320px;
+      max-width: 95vw;
+      padding: 18px 0;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      outline: none;
+      border: none;
+      transition: background 0.25s, transform 0.25s;
+    }
+    .call-support {
+      background: #3255e7;
+      color: white;
+      box-shadow: 0 5px 16px #5e85f480;
+    }
+    .call-support:hover,
+    .call-support:focus {
+      background: #2043bd;
+      transform: scale(1.08);
+      box-shadow: 0 8px 24px #3563f281;
+    }
+    .explain-btn {
+      background: #f2f2f2;
+      color: #23303e;
+      box-shadow: 0 3px 12px #c9cccfc7;
+    }
+    .explain-btn:hover,
+    .explain-btn:focus {
+      background: #dcdcdc;
+      transform: scale(1.06);
+      box-shadow: 0 5px 18px #b9bbbec3;
+    }
+
+    /* Popup modal */
+    .popup-bg {
+      position: fixed;
+      inset: 0;
+      background: #0000009a;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+    .popup-content {
+      background: white;
+      border-radius: 18px;
+      padding: 28px 32px;
+      max-width: 360px;
+      box-shadow: 0 8px 18px #00000044;
+      text-align: left;
+      font-size: 1.3rem;
+      color: #4d4d4d;
+      user-select: text;
+      position: relative;
+    }
+    .popup-content h2 {
+      margin-top: 0;
+      font-weight: 700;
+      color: #b02a2a;
+      font-size: 1.8rem;
+    }
+    .close-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-size: 1.6rem;
+      background: none;
+      border: none;
+      color: #b02a2a;
+      cursor: pointer;
+      outline: none;
+      transition: color 0.2s;
+    }
+    .close-btn:hover {
+      color: #7e161a;
+    }
+  </style>
+</head>
+<body>
+  <h1>Emergency</h1>
+
+  <button class="panic-btn" id="freezeBtn" aria-label="Freeze my account now">
+    FREEZE MY ACCOUNT NOW
+  </button>
+  <div class="message" id="freezeMsg" aria-live="polite"></div>
+
+  <button class="call-support" onclick="window.location.href='tel:1800123456'" aria-label="Call Support">
+    Call Support
+  </button>
+
+  <button class="explain-btn" id="explainBtn" aria-haspopup="dialog" aria-controls="explainPopup">
+    Explain what freezing means
+  </button>
+
+  <div class="popup-bg" id="explainPopup" role="dialog" aria-modal="true" aria-labelledby="popupTitle" tabindex="-1">
+    <div class="popup-content">
+      <button class="close-btn" id="closePopup" aria-label="Close explanation">&times;</button>
+      <h2 id="popupTitle">Account Freezing Explanation</h2>
+      <p>
+        Freezing your account means your funds are temporarily locked. No money can be sent or withdrawn until you unfreeze it. This protects you from unauthorized transactions and scams during emergencies or if you suspect suspicious activity.
+      </p>
+    </div>
+  </div>
+
+<script>
+  const freezeBtn = document.getElementById('freezeBtn');
+  const freezeMsg = document.getElementById('freezeMsg');
+  const popup = document.getElementById('explainPopup');
+  const explainBtn = document.getElementById('explainBtn');
+  const closePopup = document.getElementById('closePopup');
+
+  freezeBtn.addEventListener('click', () => {
+    freezeMsg.textContent = "Your account is frozen. No money can be sent until you unfreeze.";
+    freezeBtn.disabled = true;
+    freezeBtn.style.cursor = 'not-allowed';
+    freezeBtn.textContent = "ACCOUNT FROZEN";
+  });
+
+  explainBtn.addEventListener('click', () => {
+    popup.style.display = 'flex';
+    popup.focus();
+  });
+
+  closePopup.addEventListener('click', () => {
+    popup.style.display = 'none';
+    explainBtn.focus();
+  });
+
+  popup.addEventListener('click', (e) => {
+    if (e.target === popup) {
+      popup.style.display = 'none';
+      explainBtn.focus();
+    }
+  });
+
+  // Accessibility: close popup with Escape key
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && popup.style.display === 'flex') {
+      popup.style.display = 'none';
+      explainBtn.focus();
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SafeBank Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --font-base: 1.4rem;
+      --font-big: 2.0rem;
+      --tile-size: 190px;
+    }
+    html {
+      font-size: 16px;
+      background: #f7fafd;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f7fafd;
+      color: #24303a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Top Nav */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #3255e7;
+      padding: 20px 32px;
+      font-size: var(--font-big);
+      color: #fff;
+      border-bottom: 4px solid #253b8e;
+    }
+    .logo {
+      font-weight: bold;
+      font-size: 2.2rem;
+      letter-spacing: 2px;
+    }
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .nav-controls select, .text-size-btn, .explain-btn {
+      font-size: 1.2rem;
+      padding: 8px 16px;
+      margin: 0 2px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      transition: transform 0.18s, font-size 0.18s;
+      background: #fff;
+      color: #2d4271;
+      cursor: pointer;
+    }
+    .nav-controls .text-size-btn {
+      width: 42px;
+      font-weight: bold;
+    }
+    .nav-controls .nav-btn:hover, .nav-controls .text-size-btn:hover, .explain-btn:hover {
+      transform: scale(1.17);
+      background: #dae4fc;
+    }
+    .explain-btn {
+      background: #3ad05e;
+      color: #fff;
+      font-weight: bold;
+    }
+    .explain-btn:active {
+      background: #25953e;
+    }
+    /* Main content area */
+    main {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      padding: 44px 4vw 90px 4vw;
+      width: 100%;
+      min-width: 320px;
+      max-width: 820px;
+      margin: auto;
+    }
+    /* Welcome Section */
+    .welcome-card {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      margin-bottom: 10px;
+      margin-top: 12px;
+      padding: 32px 38px;
+      border-radius: 16px;
+      box-shadow: 0 3px 12px #d7dbec66;
+      width: 100%;
+      font-size: 2.0rem;
+      font-weight: bold;
+      gap: 14px;
+      text-align: left;
+      justify-content: space-between;
+    }
+    .welcome-text {
+      flex: 1;
+    }
+    .speak-icon {
+      font-size: 2rem;
+      background: none;
+      border: none;
+      color: #59912b;
+      cursor: pointer;
+      transition: transform 0.2s;
+      margin-left: 20px;
+    }
+    .speak-icon:hover { transform: scale(1.18); }
+    /* Balance Card */
+    .balance-card {
+      background: #40d276;
+      color: #fff;
+      font-size: 1.7rem;
+      box-shadow: 0 4px 18px #b0f2c2cc;
+      border-radius: 20px;
+      width: 98%;
+      max-width: 440px;
+      padding: 36px 38px;
+      margin: 12px 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      font-weight: bold;
+    }
+    .balance-label {
+      font-size: 1.7rem;
+      margin-bottom: 16px;
+    }
+    .balance-amount {
+      font-size: 3.5rem;
+      letter-spacing: 2px;
+      margin: 0 0 12px 0;
+      font-weight: bolder;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+    }
+    .balance-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 10px;
+    }
+    .balance-action {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      margin-left: 8px;
+      margin-right: 8px;
+      transition: transform 0.16s;
+    }
+    .balance-action:hover { transform: scale(1.15); }
+    .balance-card .last-updated {
+      font-size: 1.14rem;
+      opacity: 0.9;
+      margin-top: 2px;
+    }
+    /* Safe Mode Toggle */
+    .safe-mode-card {
+      background: #e2eefd;
+      color: #233166;
+      border-radius: 15px;
+      padding: 20px 28px;
+      width: 100%;
+      max-width: 425px;
+      font-size: 1.38rem;
+      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px #c6cff77c;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 72px;
+      height: 38px;
+    }
+    .switch input { display: none; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #bfdcf7;
+      border-radius: 24px;
+      transition: .4s;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 28px; width: 28px;
+      left: 6px; bottom: 5px;
+      background-color: #fff;
+      border-radius: 50%;
+      transition: .4s;
+    }
+    input:checked + .slider {
+      background-color: #2ecf4b;
+    }
+    input:checked + .slider:before {
+      transform: translateX(32px);
+    }
+    .safe-mode-status {
+      margin-left: 15px;
+      padding: 4px 12px;
+      border-radius: 10px;
+      background: #6af39d;
+      color: #165024;
+      font-size: 1.14rem;
+      font-weight: bold;
+    }
+    .safe-mode-off {
+      background: #f7848d;
+      color: #9a1623;
+    }
+    /* Main Actions Section */
+    .actions-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      justify-content: center;
+      width: 100%;
+      margin: 20px 0 10px 0;
+    }
+    .action-btn {
+      flex: 1 1 180px;
+      min-width: var(--tile-size);
+      max-width: 260px;
+      height: 158px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.7rem;
+      border: none;
+      border-radius: 20px;
+      margin: 0 8px;
+      cursor: pointer;
+      font-weight: bold;
+      position: relative;
+      transition: transform 0.18s, font-size 0.18s;
+      box-shadow: 0 3px 14px #dae6f3a8;
+      margin-bottom: 0;
+      outline: none;
+      gap: 8px;
+    }
+    .action-btn .action-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    .action-btn-blue { background: #4886f3; color: #fff; }
+    .action-btn-green { background: #40d276; color: #fff; }
+    .action-btn-purple { background: #a248f3; color: #fff; }
+    .action-btn:active, .action-btn:focus, .action-btn:hover {
+      transform: scale(1.12);
+      font-size: 1.87rem;
+      filter: brightness(1.06);
+    }
+    .action-explain {
+      display: block;
+      font-size: 1.12rem;
+      margin-top: 5px;
+      color: #fafad2;
+      background: #24303a99;
+      padding: 4px 8px;
+      border-radius: 8px;
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 16px;
+      opacity: 0.88;
+      z-index: 2;
+      visibility: hidden;
+    }
+    .action-btn:hover .action-explain, .action-btn:focus .action-explain {
+      visibility: visible;
+    }
+    /* Emergency button */
+    .emergency-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 32px;
+      z-index: 20;
+      border: none;
+      outline: none;
+      border-radius: 50%;
+      width: 82px;
+      height: 82px;
+      background: #eb2430;
+      color: #fff;
+      font-size: 2.7rem;
+      box-shadow: 0 4px 16px #e36e7e68;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.18s;
+    }
+    .emergency-btn:active, .emergency-btn:focus, .emergency-btn:hover {
+      background: #ba181b;
+      transform: scale(1.13);
+    }
+    /* Voice Mode */
+    .voice-mode-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 26px 25px;
+      font-size: 1.23rem;
+      width: 98%;
+      box-shadow: 0 2px 6px #dad2fd70;
+      margin: 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      max-width: 430px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .voice-mode-card:hover {
+      background: #eaf4fc;
+      transform: scale(1.07);
+    }
+    .voice-mic {
+      font-size: 1.9rem;
+      color: #3255e7;
+      margin-right: 5px;
+    }
+    /* Reminders */
+    .reminder-card {
+      background: #f7f6c1;
+      color: #8d7a1b;
+      border-radius: 16px;
+      padding: 24px 25px;
+      font-size: 1.20rem;
+      width: 98%;
+      max-width: 430px;
+      margin: 14px 0;
+      box-shadow: 0 2px 8px #e3e0a67d;
+      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .reminder-title {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .reminder-toggle {
+      margin-left: 12px;
+      margin-top: 1px;
+      accent-color: #edb81c;
+      width: 25px;
+      height: 25px;
+      cursor: pointer;
+    }
+    .reminder-list {
+      margin: 0 0 0 12px;
+      font-weight: normal;
+    }
+    /* Footer */
+    footer {
+      width: 100%;
+      background: #253b8e;
+      color: #fff;
+      font-size: 1.20rem;
+      text-align: center;
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      letter-spacing: 0.07rem;
+      margin-top: 30px;
+    }
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .footer-btn {
+      color: #232a47;
+      background: #fff;
+      margin: 4px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1.15rem;
+      padding: 9px 18px;
+      cursor: pointer;
+      transition: background 0.16s, transform 0.18s;
+      font-weight: bold;
+    }
+    .footer-btn:hover, .footer-btn:focus {
+      background: #e2eefd;
+      transform: scale(1.12);
+    }
+    .privacy-link {
+      color: #fff;
+      font-size: 1.18rem;
+      padding: 0 7px;
+      text-decoration: underline;
+    }
+    /* Responsive */
+    @media (max-width: 650px) {
+      .navbar { flex-direction: column; align-items: flex-start; gap: 10px; }
+      main { padding-left: 2vw; padding-right: 2vw; }
+      .welcome-card, .balance-card, .safe-mode-card, .voice-mode-card, .reminder-card { padding: 17px; }
+      .action-btn { min-width: 140px; height: 112px; font-size: 1.15rem; }
+      .balance-amount { font-size: 2.35rem; }
+      .actions-grid { gap: 16px; }
+      .emergency-btn { width: 64px; height: 64px; font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <span class="logo" id="brandName">SafeBank</span>
+    <div class="nav-controls">
+      <select id="langSelector" aria-label="Choose Language">
+        <option value="en">EN</option>
+        <option value="hi">HI</option>
+        <option value="kn">KN</option>
+        <option value="ta">TA</option>
+        <option value="te">TE</option>
+      </select>
+      <button class="text-size-btn" id="increaseFont">A+</button>
+      <button class="text-size-btn" id="decreaseFont">A–</button>
+      <button class="explain-btn" id="explainPageBtn">Explain This Page</button>
+    </div>
+  </nav>
+  <main>
+    <!-- Welcome Section -->
+    <div class="welcome-card" id="welcomeCard">
+      <span class="welcome-text" id="welcomeText">
+        Hello Mr. Ramesh 👋 <br>
+        Welcome to SafeBank!
+      </span>
+      <button class="speak-icon" title="Read this aloud" id="welcomeSpeakBtn">&#128266;</button>
+    </div>
+    <!-- Balance Card Section -->
+    <div class="balance-card" id="balanceCard">
+      <div class="balance-label" id="balanceLabel">Your Balance</div>
+      <div class="balance-amount" id="balanceAmount">
+        <span id="balance">&#8377;23,450.00</span>
+        <button class="balance-action" id="toggleEye" aria-label="Show/Hide Balance">&#128065;</button>
+        <button class="balance-action" id="reloadBalance" aria-label="Refresh Balance">&#128260;</button>
+        <button class="balance-action" id="balanceSpeakBtn" aria-label="Read balance">&#128266;</button>
+      </div>
+      <div class="last-updated" id="lastUpdated">(Last updated: 2 minutes ago)</div>
+    </div>
+    <!-- Safe Mode Toggle -->
+    <div class="safe-mode-card">
+      <span>
+        <span style="font-size: 1.5rem; margin-right:9px;">🛡️</span>
+        <span id="safeModeText">Safe Mode:</span>
+      </span>
+      <label class="switch" title="Safe Mode Toggle">
+        <input type="checkbox" id="safeSwitch" checked>
+        <span class="slider"></span>
+      </label>
+      <span class="safe-mode-status" id="safeStatusTxt">ON</span>
+    </div>
+    <!-- Main Action Buttons -->
+    <div class="actions-grid">
+      <button class="action-btn action-btn-blue" onclick="location.href='send.html'" tabindex="0">
+        <span class="action-icon">&#128184;</span>
+        <span id="sendMoneyText">Send Money</span>
+        <span class="action-explain">Use this when you want to send money to someone.</span>
+      </button>
+      <button class="action-btn action-btn-green" onclick="location.href='transactions.html'" tabindex="0">
+        <span class="action-icon">&#128196;</span>
+        <span id="transactionsText">Transactions</span>
+        <span class="action-explain">Tap here to see your recent activities.</span>
+      </button>
+      <button class="action-btn action-btn-purple" onclick="location.href='settings.html'" tabindex="0">
+        <span class="action-icon">&#9881;</span>
+        <span id="settingsText">Settings & Profile</span>
+        <span class="action-explain">Manage your settings or view profile information.</span>
+      </button>
+    </div>
+    <!-- Voice Mode Card -->
+    <div class="voice-mode-card" tabindex="0" id="voiceModeCard" onclick="location.href='emergency.html'">
+      <span class="voice-mic">&#127908;</span>
+      <span id="voiceCardText">Voice Mode: Tap & Speak - "Send 500 to Ramesh" or "Check balance"</span>
+    </div>
+    <!-- Routine Reminders -->
+    <div class="reminder-card">
+      <div class="reminder-title">
+        <span>&#128276; Reminders:</span>
+        <input class="reminder-toggle" type="checkbox" id="reminderToggle" checked>
+        <label for="reminderToggle">ON/OFF</label>
+      </div>
+      <ul class="reminder-list" id="reminderList">
+        <li>Electricity bill due in 3 days</li>
+        <li>Pension deposit expected on 1st March</li>
+      </ul>
+    </div>
+  </main>
+  <!-- Emergency Button -->
+  <button class="emergency-btn" id="emergencyBtn" title="Emergency" onclick="location.href='emergency.html'">
+    🆘
+  </button>
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <button class="footer-btn" onclick="alert('Connecting to support...')">Contact Support</button>
+      <a class="footer-btn" href="tel:1800123456">Call Bank Helpdesk</a>
+    </div>
+    <a href="#" class="privacy-link">Privacy Policy</a>
+  </footer>
+  <script>
+    // Instant Language Switch (demo with static texts)
+    const languages = {
+      en: {
+        brand: "SafeBank",
+        login: "Login to Netbanking",
+        hello: "Hello Mr. Ramesh 👋",
+        welcome: "Welcome to SafeBank!",
+        balance: "Your Balance",
+        updated: "(Last updated: 2 minutes ago)",
+        safeMode: "Safe Mode:",
+        send: "Send Money",
+        sendExplain: "Use this when you want to send money to someone.",
+        transactions: "Transactions",
+        txExplain: "Tap here to see your recent activities.",
+        settings: "Settings & Profile",
+        settingsExplain: "Manage your settings or view profile information.",
+        voice: 'Voice Mode: Tap & Speak - "Send 500 to Ramesh" or "Check balance"',
+        reminders: [
+          "Electricity bill due in 3 days",
+          "Pension deposit expected on 1st March"
+        ]
+      },
+      hi: {
+        brand: "सुरक्षितबैंक",
+        login: "नेटबैंकिंग में लॉगिन करें",
+        hello: "नमस्ते श्री रमेश 👋",
+        welcome: "सुरक्षितबैंक में आपका स्वागत है!",
+        balance: "आपकी शेष राशि",
+        updated: "(अंतिम अपडेट: 2 मिनट पहले)",
+        safeMode: "सुरक्षित मोड:",
+        send: "पैसे भेजें",
+        sendExplain: "किसी को पैसे भेजने के लिए इसका उपयोग करें।",
+        transactions: "लेन-देन",
+        txExplain: "हालिया गतिविधियाँ देखने के लिए यहां टैप करें।",
+        settings: "सेटिंग्स व प्रोफ़ाइल",
+        settingsExplain: "अपनी सेटिंग्स प्रबंधित करें या प्रोफ़ाइल देखें।",
+        voice: 'वॉइस मोड: टैप करें और बोलें - "रमेश को 500 भेजें" या "बैलेंस देखें"',
+        reminders: [
+          "3 दिनों में बिजली बिल देना है",
+          "पेंशन 1 मार्च को जमा होनी है"
+        ]
+      },
+      kn: {
+        brand: "ಸೆಫ್‌ಬ್ಯಾಂಕ್",
+        login: "ನೆಟ್ಬ್ಯಾಂಕಿಂಗ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ",
+        hello: "ನಮಸ್ಕಾರ ಶ್ರೀ ರಾಮೇಶ್ 👋",
+        welcome: "ಸೆಫ್‌ಬ್ಯಾಂಕ್‌ಗೆ ಸ್ವಾಗತ!",
+        balance: "ನಿಮ್ಮ ಶೇಷ",
+        updated: "(ಕೊನೆಯ ಮಾಹಿತಿ: 2 ನಿಮಿಷಗಳ ಹಿಂದೆ)",
+        safeMode: "ಭದ್ರ ಸ್ಥಿತಿ:",
+        send: "ಹಣ ಕಳುಹಿಸಿ",
+        sendExplain: "ನೀವು ಯಾರಿಗಾದರೂ ಹಣ ಕಳುಹಿಸಲು ಇದನ್ನು ಬಳಸಿ.",
+        transactions: "ವಹಿವಾಟುಗಳು",
+        txExplain: "ನಿಮ್ಮ ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆಗಳನ್ನು ನೋಡಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ.",
+        settings: "ಸೆಟ್ಟಿಂಗ್ಸ್ ಮತ್ತು ಪ್ರೊಫೈಲ್",
+        settingsExplain: "ನಿಮ್ಮ ಸೆಟ್ಟಿಂಗ್ಗಳು ಅಥವಾ ಪ್ರೊಫೈಲ್ ಅನ್ನು ನೋಡಿಕೊಳ್ಳಿ.",
+        voice: 'ವಾಯ್ಸ್ ಮೋಡ್: ಟ್ಯಾಪ್ ಮಾಡಿ ಮಾತನಾಡಿ - "ರಮೇಶಿಗೆ 500 ಕಳುಹಿಸಿ" ಅಥವಾ "ಶೇಷ ಪರಿಶೀಲಿಸಿ"',
+        reminders: [
+          "3 ದಿನಗಳಲ್ಲಿ ವಿದ್ಯುತ್ ಬಿಲ್ ಬಾಕಿಯಿದೆ",
+          "ಪೆನ್ಷನ್ 1 ಮಾರ್ಚ್‌ಗೆ ಬರುವ ಅಧಿಕೃತ ಸೆಟ್"
+        ]
+      },
+      ta: {
+        brand: "பாதுகாப்பு வங்கி",
+        login: "நெட்பாங்கிங் உள்நுழைவு",
+        hello: "வணக்கம் திரு ரமேஷ் 👋",
+        welcome: "பாதுகாப்பு வங்கிக்கு வரவேற்கிறோம்!",
+        balance: "உங்கள் இருப்பு",
+        updated: "(கடைசியாக புதுப்பிக்கப்பட்டது: 2 நிமிடம் முன்பு)",
+        safeMode: "பாதுகாப்பு பயன்முறை:",
+        send: "பணம் அனுப்பு",
+        sendExplain: "நீங்கள் யாரையேனும் பணம் அனுப்ப இதைப் பயன்படுத்துங்கள்.",
+        transactions: "பரிவர்த்தனைகள்",
+        txExplain: "உங்கள் சமீபத்திய நடவடிக்கைகளை பார்க்க இங்கு தட்டவும்.",
+        settings: "அமைப்புகள் மற்றும் சுயவிவரம்",
+        settingsExplain: "உங்கள் அமைப்புகள் அல்லது சுயவிவரத்தை நிர்வகிக்கவும்.",
+        voice: 'வாய்ஸ் மூடு: தட்டி பேசவும் - "ரமேஷ்க்கு 500 அனுப்பு" அல்லது "இருப்பு பார்க்கவும்"',
+        reminders: [
+          "3 நாட்களில் மின் கட்டணம் செலுத்த வேண்டும்",
+          "பங்களிப்பு 1 மார்ச்சில் வரவேற்கப்படுகிறது"
+        ]
+      },
+      te: {
+        brand: "సురక్షితబ్యాంక్",
+        login: "నెట్‌బ్యాంకింగ్‌లో లాగిన్ చేయండి",
+        hello: "హలో శ్రీ రమేశ్ 👋",
+        welcome: "సురక్షిత బ్యాంక్‌కు స్వాగతం!",
+        balance: "మీ బ్యాలెన్స్",
+        updated: "(చివరిగా నవీకరించబడింది: 2 నిమిషాల క్రితం)",
+        safeMode: "సురక్షిత మోడ్:",
+        send: "డబ్బు పంపండి",
+        sendExplain: "ఎవరికి అయినా డబ్బు పంపేటప్పుడు ఉపయోగించండి.",
+        transactions: "లావాదేవీలు",
+        txExplain: "మీ తాజా కార్యకలాపాలను చూసేందుకు ఇక్కడ ట్యాప్ చేయండి.",
+        settings: "సెట్టింగ్స్ & ప్రొఫైల్",
+        settingsExplain: "మీ సెట్టింగులను నిర్వహించండి లేదా ప్రొఫైల్ చూడండి.",
+        voice: 'వాయిస్ మోడ్: ట్యాప్ చేసి మాట్లాడండి - "రమేష్ కు 500 పంపండి" లేదా "బ్యాలెన్స్ చూడండి"',
+        reminders: [
+          "3 రోజుల్లో విద్యుత్ బిల్ చెల్లించాలి",
+          "పెన్షన్ 1 మార్చిలో జమ అవుతుంది"
+        ]
+      }
+    }
+    function setLang(lang) {
+      const l = languages[lang] || languages["en"];
+      document.getElementById("brandName").innerText = l.brand;
+      document.getElementById("welcomeText").innerHTML = `${l.hello} <br> ${l.welcome}`;
+      document.getElementById("balanceLabel").innerText = l.balance;
+      document.getElementById("lastUpdated").innerText = l.updated;
+      document.getElementById("safeModeText").innerText = l.safeMode;
+      document.getElementById("sendMoneyText").innerText = l.send;
+      document.querySelector(".action-btn-blue .action-explain").innerText = l.sendExplain;
+      document.getElementById("transactionsText").innerText = l.transactions;
+      document.querySelector(".action-btn-green .action-explain").innerText = l.txExplain;
+      document.getElementById("settingsText").innerText = l.settings;
+      document.querySelector(".action-btn-purple .action-explain").innerText = l.settingsExplain;
+      document.getElementById("voiceCardText").innerText = l.voice;
+      // Reminders
+      const remUl = document.getElementById("reminderList");
+      remUl.innerHTML = "";
+      l.reminders.forEach(r => {
+        const li = document.createElement("li");
+        li.innerText = r;
+        remUl.append(li);
+      });
+    }
+    document.getElementById("langSelector").addEventListener("change", e => setLang(e.target.value));
+    setLang("en"); // Set default
+    // Text enlargement controls
+    let currentFontSize = 1.0;
+    document.getElementById("increaseFont").onclick = function() {
+      if (currentFontSize < 1.5) {
+        currentFontSize += 0.1;
+        document.body.style.fontSize = (16*currentFontSize) + "px";
+      }
+    }
+    document.getElementById("decreaseFont").onclick = function() {
+      if (currentFontSize > 0.85) {
+        currentFontSize -= 0.1;
+        document.body.style.fontSize = (16*currentFontSize) + "px";
+      }
+    }
+    // Explain this page (read-aloud)
+    document.getElementById("explainPageBtn").onclick = function() {
+      const msg = `This is your home screen. Here you can check your balance, send money, and see your transactions.`;
+      speak(msg);
+    }
+    // Welcome speak
+    document.getElementById("welcomeSpeakBtn").onclick = function() {
+      const text = document.getElementById("welcomeText").innerText;
+      speak(text);
+    }
+    // Balance visibility toggle
+    let balanceVisible = true;
+    document.getElementById("toggleEye").onclick = function() {
+      balanceVisible = !balanceVisible;
+      document.getElementById("balance").innerText = balanceVisible ? "₹23,450.00" : "••••••";
+      document.getElementById("toggleEye").innerHTML = balanceVisible ? "&#128065;" : "&#128068;";
+    }
+    // Balance voice
+    document.getElementById("balanceSpeakBtn").onclick = function() {
+      speak("Your current balance is twenty-three thousand four hundred fifty rupees.");
+    }
+    // Fake reload
+    document.getElementById("reloadBalance").onclick = function() {
+      document.getElementById("lastUpdated").innerText = "(Last updated: just now)";
+      setTimeout(() => { document.getElementById("lastUpdated").innerText = "(Last updated: 2 minutes ago)"; }, 4000);
+    }
+    // Safe mode switch
+    document.getElementById("safeSwitch").onchange = function() {
+      const stat = document.getElementById("safeStatusTxt");
+      if (this.checked) {
+        stat.innerText = "ON";
+        stat.classList.remove("safe-mode-off");
+        alert('Safe mode ON!\nLimits transfer, blocks unknown contacts, asks for confirmation at each step.');
+      } else {
+        stat.innerText = "OFF";
+        stat.classList.add("safe-mode-off");
+        alert('Safe mode OFF! Normal banking enabled.');
+      }
+    }
+    // Emergency freeze function
+    document.getElementById("emergencyBtn").onclick = function() {
+      if (confirm("Do you want to freeze your account immediately?")) {
+        alert("Account frozen! (Pretend backend call made.)");
+      }
+    }
+    // Voice mode click
+    document.getElementById("voiceModeCard").onclick = function() {
+      speak('Voice command activated. Example: "Send 500 to Ramesh". (Voice input requires extra code to handle mic, which is complex for this demo)');
+    }
+    // Reminders ON/OFF
+    document.getElementById("reminderToggle").onchange = function(e) {
+      document.getElementById("reminderList").style.opacity = this.checked ? "1" : "0.4";
+    }
+    // Global speak function
+    function speak(text) {
+      window.speechSynthesis.cancel();
+      const utter = new window.SpeechSynthesisUtterance(text);
+      utter.rate = 1.03;
+      window.speechSynthesis.speak(utter);
+    }
+  </script>
+</body>
+</html>

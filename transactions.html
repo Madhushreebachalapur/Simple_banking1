@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Transactions - SafeBank</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7fafd;
+      color: #24303a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0 100px 0;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 16px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    /* Filter Buttons */
+    .filters {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .filter-btn {
+      background: #d0d9ff;
+      border: none;
+      font-size: 1.4rem;
+      padding: 14px 28px;
+      border-radius: 36px;
+      cursor: pointer;
+      font-weight: 700;
+      color: #3245a8;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+      user-select: none;
+      outline: none;
+    }
+    .filter-btn:hover,
+    .filter-btn:focus {
+      transform: scale(1.15);
+      background-color: #8b9aff;
+      color: white;
+    }
+    .filter-btn.active {
+      background-color: #3255e7;
+      color: white;
+      transform: scale(1.15);
+    }
+
+    /* Transaction Cards */
+    .transactions {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      width: 100%;
+      max-width: 480px;
+      padding: 0 16px;
+    }
+    .tx-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 22px 28px;
+      box-shadow: 0 4px 14px #d7e6fccc;
+      font-size: 1.6rem;
+      font-weight: bold;
+      position: relative;
+      color: #24303a;
+      cursor: default;
+      transition: box-shadow 0.2s ease;
+    }
+    .tx-card:hover {
+      box-shadow: 0 6px 18px #a0b8f7cc;
+    }
+
+    .tx-card.sent {
+      border-left: 8px solid #e44343; /* Red border */
+      color: #b02a2a;
+    }
+    .tx-card.received {
+      border-left: 8px solid #38a169; /* Green border */
+      color: #1f6830;
+    }
+
+    .tx-date {
+      font-size: 1.2rem;
+      color: #576b8b;
+      margin-top: 6px;
+      font-weight: normal;
+    }
+
+    /* Money Guarantee Box */
+    .guarantee-box {
+      max-width: 480px;
+      width: 100%;
+      background: #d6f5d6;
+      border-radius: 16px;
+      padding: 28px 30px;
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #2c6b2d;
+      margin-top: 48px;
+      box-shadow: 0 5px 16px #a0dca080;
+      position: relative;
+    }
+
+    .guarantee-box:hover::after {
+      content: "Banks use secure systems to protect your money.";
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #3255e7bb;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: normal;
+      font-size: 1.1rem;
+      white-space: nowrap;
+      pointer-events: none;
+      box-shadow: 0 4px 8px #16327a80;
+      user-select: none;
+      z-index: 10;
+    }
+
+    @media (max-width: 520px) {
+      .tx-card {
+        font-size: 1.3rem;
+        padding: 18px 22px;
+      }
+      .filter-btn {
+        font-size: 1.2rem;
+        padding: 12px 18px;
+      }
+      body {
+        padding: 16px 10px 80px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Transactions</h1>
+
+  <div class="filters" role="group" aria-label="Transaction filters">
+    <button class="filter-btn active" data-filter="all" aria-pressed="true">ALL</button>
+    <button class="filter-btn" data-filter="sent" aria-pressed="false">SENT</button>
+    <button class="filter-btn" data-filter="received" aria-pressed="false">RECEIVED</button>
+  </div>
+
+  <div class="transactions" id="txList" aria-live="polite">
+    <!-- Transaction cards inserted here -->
+  </div>
+
+  <div class="guarantee-box" tabindex="0" role="note" aria-label="Money guarantee message">
+    ✔ Your money is safe.<br />
+    ✔ All transactions are verified.<br />
+    ✔ No money leaves your account without your permission.
+  </div>
+
+  <script>
+    // Sample hardcoded transactions
+    const transactions = [
+      { type: "sent", amount: 500, to: "Ramesh", date: "3 Feb, 2:42 PM" },
+      { type: "received", amount: 1000, from: "Daughter", date: "1 Feb, 9:10 AM" },
+      { type: "sent", amount: 150, to: "Suresh", date: "30 Jan, 5:15 PM" },
+      { type: "received", amount: 200, from: "Son", date: "28 Jan, 11:40 AM" }
+    ];
+
+    const txList = document.getElementById("txList");
+    const filterButtons = document.querySelectorAll(".filter-btn");
+
+    // Function to create a transaction card HTML
+    function createTransactionCard(tx) {
+      let card = document.createElement("div");
+      card.className = "tx-card " + (tx.type === "sent" ? "sent" : "received");
+
+      let desc = "";
+      if (tx.type === "sent") {
+        desc = `Sent ₹${tx.amount} to ${tx.to}`;
+      } else {
+        desc = `Received ₹${tx.amount} from ${tx.from}`;
+      }
+
+      card.innerHTML = `
+        <div>${desc}</div>
+        <div class="tx-date">${tx.date}</div>
+      `;
+      return card;
+    }
+
+    // Render all or filtered transactions
+    function renderTransactions(filter = "all") {
+      txList.innerHTML = "";
+      let filteredTx = transactions;
+      if (filter === "sent") {
+        filteredTx = transactions.filter(tx => tx.type === "sent");
+      } else if (filter === "received") {
+        filteredTx = transactions.filter(tx => tx.type === "received");
+      }
+
+      if (filteredTx.length === 0) {
+        txList.innerHTML = "<p style='font-size:1.4rem; font-weight:bold; color:#666;'>No transactions found.</p>";
+        return;
+      }
+
+      filteredTx.forEach(tx => {
+        txList.appendChild(createTransactionCard(tx));
+      });
+    }
+
+    // Setup filter buttons
+    filterButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        filterButtons.forEach(btn => {
+          btn.classList.remove("active");
+          btn.setAttribute("aria-pressed", "false");
+        });
+        button.classList.add("active");
+        button.setAttribute("aria-pressed", "true");
+        renderTransactions(button.dataset.filter);
+      });
+    });
+
+    // Initial render - all transactions
+    renderTransactions("all");
+  </script>
+</body>
+</html>
